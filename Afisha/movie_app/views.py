@@ -13,7 +13,8 @@ from .serializers import (
     DirectorsSerializer,
     MoviesSerializer,
     MovieDetailSerializer,
-    ReviewSerializer
+    ReviewSerializer,
+    MoviesReviewsSerializer
 )
 
 
@@ -68,4 +69,11 @@ def review_detail_api_view(request, review_id):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     data = ReviewSerializer(review, many=False).data
+    return Response(data=data)
+
+
+@api_view(['GET'])
+def movies_reviews_api_view(request):
+    movies = Movie.objects.all()
+    data = MoviesReviewsSerializer(movies, many=True).data
     return Response(data=data)
