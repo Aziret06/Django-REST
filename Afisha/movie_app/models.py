@@ -13,7 +13,6 @@ class Movie(models.Model):
     description = models.TextField(blank=True, null=True)
     duration = models.CharField(max_length=8, blank=True, null=True)
     director = models.ForeignKey(Director, on_delete=models.CASCADE, related_name='movies')
-    # rating =
 
     def movies_reviews(self):
         return self.reviews

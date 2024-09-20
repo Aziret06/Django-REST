@@ -14,7 +14,10 @@ from .serializers import (
     MoviesSerializer,
     MovieDetailSerializer,
     ReviewSerializer,
-    MoviesReviewsSerializer
+    MoviesReviewsSerializer,
+    MovieValidateSerializer,
+    DirectorValidateSerializer,
+    ReviewValidateSerializer
 )
 
 
@@ -25,7 +28,10 @@ def directors_list_api_view(request):
         data = DirectorsSerializer(directors, many=True).data
         return Response(data=data)
     elif request.method == 'POST':
-        name = request.data.get('name')
+        serializer = DirectorValidateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        name = serializer.validated_data.get('name')
         director = Director.objects.create(
             name=name
         )
@@ -43,7 +49,10 @@ def director_detail_api_view(request, director_id):
         data = DirectorsSerializer(director, many=False).data
         return Response(data=data)
     elif request.method == 'PUT':
-        director.name = request.data.get('name')
+        serializer = DirectorValidateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        director.name = serializer.validated_data.get('name')
         director.save()
         return Response(status=status.HTTP_201_CREATED,
                         data=DirectorsSerializer(director).data)
@@ -59,16 +68,23 @@ def movies_list_api_view(request):
         data = MoviesSerializer(movies, many=True).data
         return Response(data=data)
     elif request.method == 'POST':
-        title = request.data.get('title')
-        description = request.data.get('description')
-        duration = request.data.get('duration')
-        director_id = request.data.get('director_id')
+        serializer = MovieValidateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(status=status.HTTP_400_BAD_REQUEST,
+                            data=serializer.errors)
+
+        title = serializer.validated_data.get('title')
+        description = serializer.validated_data.get('description')
+        duration = serializer.validated_data.get('duration')
+        director_id = serializer.validated_data.get('director_id')
+
         movie = Movie.objects.create(
             title=title,
             description=description,
             duration=duration,
             director_id=director_id
         )
+
         return Response(status=status.HTTP_201_CREATED,
                         data=MoviesSerializer(movie).data)
 
@@ -83,10 +99,13 @@ def movie_detail_api_view(request, movie_id):
         data = MovieDetailSerializer(movie, many=False).data
         return Response(data=data)
     elif request.method == 'PUT':
-        movie.title = request.data.get('title')
-        movie.description = request.data.get('description')
-        movie.duration = request.data.get('duration')
-        movie.director_id = request.data.get('director_id')
+        serializer = MovieValidateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        movie.title = serializer.validated_data.get('title')
+        movie.description = serializer.validated_data.get('description')
+        movie.duration = serializer.validated_data.get('duration')
+        movie.director_id = serializer.validated_data.get('director_id')
         movie.save()
         return Response(status=status.HTTP_201_CREATED,
                         data=MovieDetailSerializer(movie).data)
@@ -102,9 +121,13 @@ def reviews_list_api_view(request):
         data = ReviewSerializer(review, many=True).data
         return Response(data=data)
     elif request.method == 'POST':
-        text = request.data.get('text')
-        stars = request.data.get('stars')
-        movie_id = request.data.get('movie_id')
+        serializer = ReviewValidateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        text = serializer.validated_data.get('text')
+        stars = serializer.validated_data.get('stars')
+        movie_id = serializer.validated_data.get('movie_id')
+
         review = Review.objects.create(
             text=text,
             stars=stars,
@@ -124,9 +147,12 @@ def review_detail_api_view(request, review_id):
         data = ReviewSerializer(review, many=False).data
         return Response(data=data)
     elif request.method == 'PUT':
-        review.text = request.data.get('text')
-        review.stars = request.data.get('stars')
-        review.movie_id = request.data.get('movie_id')
+        serializer = ReviewValidateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        review.text = serializer.validated_data.get('text')
+        review.stars = serializer.validated_data.get('stars')
+        review.movie_id = serializer.validated_data.get('movie_id')
         review.save()
         return Response(status=status.HTTP_201_CREATED,
                         data=ReviewSerializer(review).data)
@@ -141,4 +167,3 @@ def movies_reviews_api_view(request):
         movies = Movie.objects.all()
         data = MoviesReviewsSerializer(movies, many=True).data
         return Response(data=data)
-
