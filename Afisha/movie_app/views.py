@@ -1,7 +1,8 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 from .models import (
     Director,
@@ -22,6 +23,7 @@ from .serializers import (
 
 
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def directors_list_api_view(request):
     if request.method == 'GET':
         directors = Director.objects.all()
