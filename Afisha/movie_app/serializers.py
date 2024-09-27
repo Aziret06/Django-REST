@@ -54,7 +54,10 @@ class MoviesReviewsSerializer(serializers.ModelSerializer):
 
     def get_rating(self, movie):
         data = movie.reviews.all()
-        return round(sum(i.stars for i in data) / len(data), 1)
+        try:
+            return round(sum(i.stars for i in data) / len(data), 1)
+        except ZeroDivisionError:
+            return 'This movie dose not have rating'
 
 
 class MovieValidateSerializer(serializers.Serializer):

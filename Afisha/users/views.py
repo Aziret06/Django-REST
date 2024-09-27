@@ -13,17 +13,6 @@ import random
 from .models import SmsCode
 
 
-# @api_view(['POST'])
-# def registration_api_view(request):
-#     serializer = UserCreateSerializer(data=request.data)
-#     serializer.is_valid(raise_exception=True)
-#
-#     user = User.objects.create_user(**serializer.validated_data)
-#
-#     return Response(status=status.HTTP_201_CREATED,
-#                     data={'user_id': user.id})
-
-
 class RegistrationAPIView(APIView):
     def post(self, request):
         # Step 1: Validate
