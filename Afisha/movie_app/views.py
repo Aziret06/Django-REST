@@ -42,6 +42,7 @@ def directors_list_api_view(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def director_detail_api_view(request, director_id):
     try:
         director = Director.objects.get(id=director_id)
@@ -64,6 +65,7 @@ def director_detail_api_view(request, director_id):
 
 
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def movies_list_api_view(request):
     if request.method == 'GET':
         movies = Movie.objects.all()
@@ -92,6 +94,7 @@ def movies_list_api_view(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def movie_detail_api_view(request, movie_id):
     try:
         movie = Movie.objects.get(id=movie_id)
@@ -117,6 +120,7 @@ def movie_detail_api_view(request, movie_id):
 
 
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def reviews_list_api_view(request):
     if request.method == 'GET':
         review = Review.objects.all()
@@ -140,6 +144,7 @@ def reviews_list_api_view(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def review_detail_api_view(request, review_id):
     try:
         review = Review.objects.get(id=review_id)
@@ -164,6 +169,7 @@ def review_detail_api_view(request, review_id):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def movies_reviews_api_view(request):
     if request.method == 'GET':
         movies = Movie.objects.all()
